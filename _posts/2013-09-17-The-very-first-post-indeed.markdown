@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Finally there is one!"
-categories: jekyll
+categories: thoughts
 ---
 
 This is the very first blog post I compose and then upload to the github where the blog lives. I shall not push it. I'll just say something about my recent reading and some thoughts, maybe.
@@ -12,4 +12,4 @@ I plan to write some about these stuff, with the interpretation of me myself alo
 
 I'm kinda a novice, not just about the content, this platform as well. So, I might need to sharpen my skills along the way.
 
-Best luck to me!  
+Best luck to me!
