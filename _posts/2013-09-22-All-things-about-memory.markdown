@@ -27,21 +27,25 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 
 > 通信并非只包含数据通信，还包括状态通知。如Java中，在一个线程调用wait方法阻塞了之后，另一个线程可以通过调用notify或notifyAll来通知其可以回到Ready状态。在java.util.concurrent包中的LockSupport类中使用了Unsafe.park()和unpark()方法来完成相同的功能。不过这里我只想讨论数据通信，如果说得更直观一点，讨论的前提应该是在[Lock-free][23]的程序。
 
-虽然线程这个概念模型在语言级别有Thread类（对象）来表示，但在操作系统层面线程是按照一定的顺序执行指令的一个mental model，在Java中即为方法的执行。如果将其与对象本身分离开来，应该会有更清晰的认识。
+虽然线程这个概念模型在语言级别有Thread类（对象）来表示，但在操作系统层面线程是按照一定的顺序执行指令的一个mental model，在Java中即为方法的执行。如果将线程间的communication与对象的状态本身分离开来理解，应该会有更清晰的认识。
 
 ![Memory Communication][21]
 
-刚开始接触多线程的时候，我一直没有真正搞清楚线程之间协作执行（这个理解并非是表层的理解），甚至是完全没有意识到协作这件事情（总是被各种状态的推导折磨）。现在看来，其实是其本身有些counter-intuitive，因为语言层级的状态与操作系统层面上线程间的交互tangle在了一起。了解到了这一点，再加上后来接触到底层那些为了使这个通信正确和及时完成的机制时，我豁然开朗了：**Communication才是根本，其他细节都是在为这个目的服务**。
+刚开始接触多线程的时候，我一直没有真正搞清楚线程之间协作执行是怎么样一种机制（这个理解并非是表层的理解），甚至是完全没有意识到协作这件事情（总是被各种状态的推导折磨）。现在看来，其实是其本身有些counter-intuitive，因为语言层级的状态与操作系统层面上线程间的交互tangle在了一起。了解到了这一点，再加上后来接触到底层那些为了使这个通信正确和及时完成的机制时，我豁然开朗了：**Communication才是根本，其他细节都是在为这个目的服务**。
 
 > 人脑对于为什么做一件事情（cause）总是更为敏感的，而对于怎么做和做什么（how & what）是相对迟钝的。from [How great leaders inspire action][8]
 
-几乎所有我之前看过的书关于多线程编程，强调的都是**线程状态转换，以及线程内部状态的管理**，这是Java，C++这些面向对象语言对于线程间通信和协调的实现手段，也与底层实现方式内存共享直接契合，这无可厚非。不过我总觉得将线程间的通信与对象的状态混为一谈让人迷惑，因为线程之间真实想做的事情是通信，以与其他线程协同完成我们赋予的任务。类似的，底层的内存共享它也就是一种通信机制而已。
+几乎所有我之前看过的书关于多线程编程，强调的都是**线程状态转换，以及线程内部状态的管理**，这是Java，C++这些面向对象语言对于线程间通信和协调的实现手段，也与底层实现方式内存共享直接契合，这无可厚非。同时，在缺少底层的概念的情况下，要把整个通信的流程或细节讲清楚也不太可能。我的理解是，大师们将范围限制在语言层级，至多在包含应用层的内存模型（如JVM的内存模型），能够隐藏其本身一些“不太必要的细节”。这样一来，线程的协作与通信从一定程度上来说，也能比较准确的描述出来。不过当我看到一些描述的时候总会觉得缺少了点什么，这也是最初促使我去探索的地方。
+
+我总觉得将线程间的通信与对象的状态混为一谈让人迷惑，因为线程之间真实想做的事情是通信，以与其他线程协同完成我们赋予的任务。Likewise，底层的内存共享它也就是一种通信机制而已。
 
 如果不是因为最初的面向对象模型被大幅度修改，对象之间变得能够互相访问修改状态，现今的面向对象系统的运作模式应该更类似于[actor model][17]，并发编程也不会那么让人抓狂了。
 
-当然，这也只能算是hindsight。如果一早有人给我指出来，也许我也不会走那么多弯路。不过话说回来，弯路才是真正磨练人的地方。
+当然，这里所描述的内容也只能算是hindsight。如果一早有人给我指出来，也许我也不会走那么多弯路。不过话说回来，弯路才是真正磨练人的地方。
 
 # Communication in Memory
+
+接下来，我会尝试从通信的角度来描述
 
 我们知道，比较常见的[进程间通信][9]有很种，如内存共享，socket，semaphore以及messageQueue。而线程间通信靠的就是内存共享了，确切的说应该是整个内存系统提供的数据共享。这个系统包括了main memory，cache subsystem，buffers and registers.
 
@@ -88,7 +92,7 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 [8]:http://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action.html
 [9]:http://en.wikipedia.org/wiki/Inter-process_communication#Main_IPC_methodsP
 [10]:http://en.wikipedia.org/wiki/Cpu_cache#Multi-level_caches
-[11]:/pic/memory_hierachy.jpg
+[11]:/pic/memory_hierachy.png
 [12]:http://en.wikipedia.org/wiki/Fractal
 [13]:http://en.wikipedia.org/wiki/Cache_coherency
 [14]:http://en.wikipedia.org/wiki/Sequential_consistency
