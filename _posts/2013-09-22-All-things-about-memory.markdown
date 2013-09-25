@@ -27,7 +27,7 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 
 > 通信并非只包含数据通信，还包括状态通知。如Java中，在一个线程调用wait方法阻塞了之后，另一个线程可以通过调用notify或notifyAll来通知其可以回到Ready状态。在java.util.concurrent包中的LockSupport类中使用了Unsafe.park()和unpark()方法来完成相同的功能。不过这里我只想讨论数据通信，如果说得更直观一点，讨论的前提应该是在[Lock-free][23]的程序。
 
-虽然线程这个概念模型在语言级别有Thread类（对象）来表示，但在操作系统层面线程是按照一定的顺序执行指令的一个mental model，在Java中即为方法的执行。如果将线程间的communication与对象的状态本身分离开来理解，应该会有更清晰的认识。
+虽然线程这个概念模型在语言级别有Thread类（对象）来表示，但在操作系统层面线程是按照一定的顺序执行指令的一个mental model，在Java中即为方法的执行，底层则是JVM对字节码的解释外加JIT的即时编译执行。如果将线程间的communication与对象的状态本身分离开来理解，应该会有更清晰的认识。
 
 ![Memory Communication][21]
 
@@ -45,13 +45,13 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 
 # Communication in Memory
 
-接下来，我会尝试从通信的角度来描述
+接下来，我会尝试将我学到的一些概念串起来，比较粗略地去解释为了完成处理器核心之间的通信，处理器与Cache子系统都做了哪些努力。这些细节，正是我之前在学习并发编程中形成疑惑的根源。因为概念实在太多，我肯定没有办法全部提到。我写下来最主要的原因还是在于促进自己思考，人的思维是比较碎片化的，但是我会努力让他们能够不那么零散。
 
 我们知道，比较常见的[进程间通信][9]有很种，如内存共享，socket，semaphore以及messageQueue。而线程间通信靠的就是内存共享了，确切的说应该是整个内存系统提供的数据共享。这个系统包括了main memory，cache subsystem，buffers and registers.
 
 ![Memory Hierachy][11]
 
-* 主存几十纳秒的访问速度早已不能满足CPU的需求。
+* 主存几十纳秒的访问速度早已不能满足CPU的需求。上图来自[Mechanical Sympathy][25].
 
 * Cache子系统是最为核心的部分，这并不仅仅是因为cache比memory更快，**而是因为所有流向CPU的数据都必须经过cache，be it level 1, 2, or 3.**。这里所指经过是指CPU只处理存在在cache中的值，如果cache中没有那么会有一个cache-miss，然后触发数据从主存流向cache并保存其中。当代的处理器极为复杂的cache hierarchy以及其中无时无刻不在运行着的protocol（还包括prefetch）都在为了一件事情努力：减少与memory的交互，而这背后的原因当然是性能。
  
@@ -77,7 +77,9 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 
 总算从communication的角度把这些东西串了起来，其实还有不少内容没有提到如：Java中JMM对通信的支持，硬件层面的内容等。我觉得那应该是下一篇文章的内容了。
 
-下面这张图简单理了一下相关的一些概念，并分了一下类。部分已经在这里提到过了，其余的应该在下面一片文章中涉及吧。
+这篇文章的内容很多很杂，主要还是自己没能真正驾驭住如此多的概念，并将他们通俗易懂的叙述出来。不过在写下这篇文章的过程中，我真正体会到了刘未鹏所说的“[书写是为了更好的思考][24]”，希望现在开始书写还不算晚。
+
+下面这张图简单理了一下相关的一些概念，并分了一下类。部分已经在这里提到过了，其余的应该在下面一篇文章中涉及吧。
 
 ![Concepts][20]
 
@@ -105,3 +107,5 @@ I shall keep this list updated, and blogspot is in the list of sites to be block
 [21]:/pic/memory_communication.jpg
 [22]:http://preshing.com/20120930/weak-vs-strong-memory-models/
 [23]:http://preshing.com/20120612/an-introduction-to-lock-free-programming/
+[24]:http://mindhacks.cn/2009/02/09/writing-is-better-thinking/
+[25]:http://mechanical-sympathy.blogspot.co.uk/2013/02/cpu-cache-flushing-fallacy.html
