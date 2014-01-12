@@ -43,5 +43,5 @@ And the second time me I pick it up, my english reading is much better and I've 
 [1]:http://book.douban.com/subject/4746437/ "Operating System Concepts with Java"
 [2]:http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html "JSR 133 (Java Memory Model) FAQ"
 [3]:http://book.douban.com/subject/10814727/ "The 5 Elements of Effective Thinking"
-[4]:http://casnocha.com/2013/06/book-review-the-5-elements-of-effective-thinking.html "http://casnocha.com/2013/06/book-review-the-5-elements-of-effective-thinking.html"
+[4]:http://casnocha.com/2013/06/book-review-the-5-elements-of-effective-thinking.html "review"
 [5]:http://book.douban.com/subject/2130190/ "Java编程思想 （第4版）"

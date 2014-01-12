@@ -4,6 +4,8 @@ category: thoughts
 title: All about Communication
 ---
 
+> With all abstraction, the further you get from hard, cold reality, the tougher it becomes to connect cause and effect.
+
 # The trigger
 
 Well, things started when I jump into a book named [What Every Programmer Should Know about Memory][1], be it arranged like a essay I'd rather call it a book. But it's (not just) a little beyond me, with a bunch of concepts and their relationships just blow me off my mind.
