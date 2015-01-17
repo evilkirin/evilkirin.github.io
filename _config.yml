@@ -1,3 +1,3 @@
 name: Zach Tse's Little Sandbox
 markdown: redcarpet
-pygments: true
+highlighter: pygments
